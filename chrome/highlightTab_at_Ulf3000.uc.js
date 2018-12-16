@@ -1,3 +1,8 @@
+//-------------------------------------------------------
+// highlight tab script for quantum 66
+// https://github.com/Ulf3000/userchrome.js/blob/master/chrome/highlightTab_at_Ulf3000.uc.js
+//-------------------------------------------------------
+
 
 var highlightTab_at_Ulf3000 = {
 	init: function () {
