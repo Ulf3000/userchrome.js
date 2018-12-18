@@ -15,7 +15,7 @@ sanboxed(bootstrapped) scripts from chrome/sandboxed
 
 and 
 
-xul overlays from chrome/xul (not implemented yet !!!)
+xul overlays from chrome/xul (im using the jsm files from thunderbird 61, overlays were removed from firefox)
 
 ------------------------------------------------------------------------
 
@@ -36,3 +36,5 @@ the modules folder is just a folder where we can put usefull jsm files and other
 
 import like this for example
 Components.utils.import("chrome://userchromejs/content/modules/Overlays.jsm");
+
+i prepackaged the files Overlays.jsm and ChromeManifest.jsm in modules, these are important for overlay loading , they are "stolen" from thunderbird 61
