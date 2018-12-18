@@ -11,7 +11,7 @@ normal userchrome scripts from chrome/legacy
 
 and 
 
-sanboxed/bootstrapped scripts from chrome/sandboxed
+sanboxed(bootstrapped) scripts from chrome/sandboxed
 
 ------------------------------------------------------------------------
 
