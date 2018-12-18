@@ -1,6 +1,10 @@
 # userchrome.js
 
 
+works from waterfox56 up to firefox nightly 66
+
+------------------------------------------------------------------------
+
 my own version, its a little different as it loads 
 
 normal userchrome scripts from chrome/legacy
