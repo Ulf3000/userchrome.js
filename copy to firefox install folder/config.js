@@ -5,7 +5,6 @@ Components.utils.import("resource://gre/modules/osfile.jsm");
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/Console.jsm");
-const directory_service = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
 
 let userChromeLoader = {
 	init: function () {
@@ -14,7 +13,7 @@ let userChromeLoader = {
 			return;
 
 		//  REGISTER CHROME FOLDER AS chrome://userchromejs/content/  ...this makes everything so easy :)
-		let cmanifest = directory_service.get('UChrm', Components.interfaces.nsIFile);
+		let cmanifest = FileUtils.getDir('UChrm',true);
 		cmanifest.append('chrome.manifest');
 		Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar).autoRegister(cmanifest);
 
