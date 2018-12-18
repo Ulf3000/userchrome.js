@@ -18,7 +18,7 @@ chrome://userchromejs/content/
 
 
 
-which makes its very easy to load additional files , just add a subfolder and access its contents öile this for example 
+which makes its very easy to load additional files , just add a subfolder and access its contents like this for example 
 
 chrome://userchromejs/content/sandboxed/myaddondata/icon.png
 
