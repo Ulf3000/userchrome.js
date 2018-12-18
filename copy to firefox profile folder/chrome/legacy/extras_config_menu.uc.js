@@ -27,7 +27,7 @@ var uProfMenu = {
   // - Zum Ausblenden: abouts: [],
   // - Damit die about:-Seiten nicht als Untermenue, sondern direkt als Menuepunkte aufgefuehrt werden, muss das erste Element '0' sein:
   // abouts: ['0','about:about','about:addons','about:cache','about:config','about:support'],
-   abouts: ['about:about','about:addons','about:cache','about:config','about:memory','about:healthreport','about:plugins','about:support','about:preferences','about:performance'],
+   abouts: ['about:about','about:addons','about:cache','about:config','about:crashes','about:home','about:memory','about:healthreport','about:plugins','about:support','about:preferences','about:performance'],
   // Die normalen Firefox-Einstellungen auch zur Verfuegung stellen (0: nein, 1: ja):
   showNormalPrefs: 1,
   // Stellt "Skriptliste in Zwischenablage" zur Verfuegung (1: ja, 2: mit getrennter Nummerierung, 3: mit gemeinsamer Nummerierung) oder nicht (0):
@@ -41,19 +41,19 @@ var uProfMenu = {
       // aufgrund des gewaehlten warpmenuto als Untermenue von Extras anlegen
       var zielmenu = document.getElementById('main-menubar');
       if (zielmenu==null) {
-        userChrome.log("extras_config_menu.uc.js findet Zielmenue nicht, evtl. weil ein anderes Fenster als das Hauptfenster " +
+        console.log("extras_config_menu.uc.js findet Zielmenue nicht, evtl. weil ein anderes Fenster als das Hauptfenster " +
                        "geoeffnet wurde. Falls dieser Fehler auch im Hauptfenster auftritt, bitte die vorgehende Definition " +
                        "von 'zielmenu' kontrollieren.");
         return;
       }
-      var menu = zielmenu.appendChild(this.createME("menu","Config Menu",0,0,"ExtraConfigMenu"));
+      var menu = zielmenu.appendChild(this.createME("menu","Config Men\u00FC",0,0,"ExtraConfigMenu"));
       menu.setAttribute("class","menu-iconic");
       menu.setAttribute("ondblclick","getBrowser (). selectedTab = getBrowser (). addTab ('about:config');");
      } else {
       // als Button nach dem per warpmenuto gewaehlten Element anlegen (s. Kommentar ueber warpmenuto im Konfigurationsabschnitt)
       var zielmenu = document.getElementById(this.warpmenuto);
       if (zielmenu==null) {
-        userChrome.log("extras_config_menu.uc.js findet Zielpunkt '"+this.warpmenuto+"' nicht, evtl. weil ein anderes Fenster als das Hauptfenster " +
+        console.log("extras_config_menu.uc.js findet Zielpunkt '"+this.warpmenuto+"' nicht, evtl. weil ein anderes Fenster als das Hauptfenster " +
                        "geoeffnet wurde. Falls dieser Fehler auch im Hauptfenster auftritt, bitte die vorgehende Definition " +
                        "von 'warpmenuto' kontrollieren.");
         return;
@@ -62,7 +62,7 @@ var uProfMenu = {
       menu.setAttribute("id", "ExtraConfigMenu-button");
       menu.setAttribute("class", "toolbarbutton-1");
       menu.setAttribute("type", "menu");
-      menu.setAttribute("tooltiptext", "Extra Config Menu\nMittelklick \opens about:config");
+      menu.setAttribute("tooltiptext", "Extra Config Menü\nMittelklick \öffnet about:config");
       menu.setAttribute("onclick","if (event.button === 1 && !this.open) {getBrowser (). selectedTab = getBrowser (). addTab ('about:config')};");
     }
     //ab hier ist alles gleich, egal ob Button oder Menue
@@ -109,11 +109,11 @@ var uProfMenu = {
     if (this.cssOrdner) {
       menupopup.appendChild(this.createME("menuitem","CSS-Ordner","uProfMenu.dirOpen(uProfMenu.getPrefDirectoryPath('UChrm')+uProfMenu.getDirSep()+'CSS');","uProfMenu_folder"),0);
     }
-    menupopup.appendChild(this.createME("menuitem","Chrome Folder","uProfMenu.prefDirOpen('UChrm');","uProfMenu_folder"),0);
-    menupopup.appendChild(this.createME("menuitem","Profile Folder","uProfMenu.prefDirOpen('ProfD');","uProfMenu_folder"),0);
-    menupopup.appendChild(this.createME("menuitem","Addon Folder","uProfMenu.dirOpen(uProfMenu.getPrefDirectoryPath('ProfD')+uProfMenu.getDirSep()+'extensions');","uProfMenu_folder"),0);
-    menupopup.appendChild(this.createME("menuitem","Installation Folder","uProfMenu.prefDirOpen('CurProcD');","uProfMenu_folder"),0);
-    menupopup.appendChild(this.createME("menuitem","Startup-Cache Folder","uProfMenu.dirOpen(uProfMenu.getPrefDirectoryPath('ProfLD')+uProfMenu.getDirSep()+'startupCache');","uProfMenu_folder"),0);
+    menupopup.appendChild(this.createME("menuitem","Chromeordner","uProfMenu.prefDirOpen('UChrm');","uProfMenu_folder"),0);
+    menupopup.appendChild(this.createME("menuitem","Profilordner","uProfMenu.prefDirOpen('ProfD');","uProfMenu_folder"),0);
+    menupopup.appendChild(this.createME("menuitem","Addonordner","uProfMenu.dirOpen(uProfMenu.getPrefDirectoryPath('ProfD')+uProfMenu.getDirSep()+'extensions');","uProfMenu_folder"),0);
+    menupopup.appendChild(this.createME("menuitem","Installationsordner","uProfMenu.prefDirOpen('CurProcD');","uProfMenu_folder"),0);
+    menupopup.appendChild(this.createME("menuitem","Startup-Cacheordner","uProfMenu.dirOpen(uProfMenu.getPrefDirectoryPath('ProfLD')+uProfMenu.getDirSep()+'startupCache');","uProfMenu_folder"),0);
     // Ende Einbindung von Ordnern
     // Einbindung von abouts
     if (this.abouts.length>0) {
@@ -178,9 +178,7 @@ var uProfMenu = {
         var Path = Filename;
         break;
     }
-    var dir = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-      dir.initWithPath(Path);
-      dir.launch();
+    this.launch(this.TextOpenExe,Path);
   },
 
 
@@ -302,7 +300,7 @@ var uProfMenu = {
       if (sTyp==0){
         var mitem = this.createME("menuitem",scriptArray[i],"uProfMenu.edit(0,'"+scriptArray[i]+"')",sClass,0);
         mitem.setAttribute("onclick","uProfMenu.openAtGithub(event,'"+scriptArray[i]+"')");
-        mitem.setAttribute("tooltiptext"," leftclick: edit,\n middleclick: open repo"+this.cleanFileName(scriptArray[i])+" \u00F6ffnen,\n rightclick: search on GitHub");
+        mitem.setAttribute("tooltiptext"," Linksklick: Bearbeiten,\n Mittelklick: https://github.com/.../"+this.cleanFileName(scriptArray[i])+" \u00F6ffnen,\n Rechtsklick: Suche auf GitHub");
        } else {
         var mitem = this.createME("menuitem",scriptArray[i],"getBrowser (). selectedTab = getBrowser (). addTab ('"+scriptArray[i]+"')",sClass,0);
       }
