@@ -13,6 +13,10 @@ and
 
 sanboxed(bootstrapped) scripts from chrome/sandboxed
 
+and 
+
+xul overlays from chrome/xul (not implemented yet !!!)
+
 ------------------------------------------------------------------------
 
 
