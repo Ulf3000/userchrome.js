@@ -24,13 +24,16 @@ the whole chrome folder in your profile folder is internally exposed as
 
 chrome://userchromejs/content/
 
+why is this important? because chrome uris have no security limitations which mozilla has already or will impose on file uris
+
 
 
 which makes its very easy to load additional files in your script , just add a subfolder and access its contents like this for example 
 
 chrome://userchromejs/content/sandboxed/myaddondata/icon.png
 
-why is this important? because chrome uris have no security limitations which mozilla has already or will impose on file uris
+this way you can create or port whole addons very easily, not just simple scriptfiles
+
 
 --------------------------------------------------------------------------
 
