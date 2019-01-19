@@ -18,9 +18,9 @@ let userChromeLoader = {
 		Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar).autoRegister(cmanifest);
 
 		//IMPORT FILES FROM FOLDERS
-		let legacyScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "legacy"], true));
-		let sandboxedScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "sandboxed"], true));
-		let overlays = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "xul"], true));
+		let legacyScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "legacy"], true), ".js");
+		let sandboxedScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "sandboxed"], true), ".js");
+		let overlays = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "xul"], true), ".xul");
 
 		//RUN LEGACY SCRIPTS
 		let enumerator = Services.wm.getEnumerator("navigator:browser");
@@ -61,7 +61,7 @@ let userChromeLoader = {
 			osversion: Services.sysinfo.getProperty("version"),
 			abi: appinfo.XPCOMABI
 		};
-		console.log(this.options);
+		//console.log(this.options);
 		let enumerator2 = Services.wm.getEnumerator("navigator:browser");
 		while (enumerator2.hasMoreElements()) {
 			console.log("NEXT OVERLAY");
@@ -72,20 +72,24 @@ let userChromeLoader = {
 			observe: async function (aSubject, aTopic, aData) {
 				aSubject.addEventListener('DOMContentLoaded', function (aEvent) {
 					let win = aEvent.originalTarget.defaultView;
-					userChromeLoader.loadOverlays(win, overlays);				
+					userChromeLoader.loadOverlays(win, overlays);
 				}, true);
 			}
 		}
 		Services.obs.addObserver(windowStartUpObserver2, 'domwindowopened', false);
 	},
-	importFolder: function (aFolder) {
+	importFolder: function (aFolder, aType) {
 		let files = [];
-		let dir = aFolder.directoryEntries;
-		while (dir.hasMoreElements()) {
-			let file = dir.getNext().QueryInterface(Components.interfaces.nsIFile);
-			if (!file.isDirectory()) {
-				files.push(file);
+		try {
+			let dir = aFolder.directoryEntries;
+			while (dir.hasMoreElements()) {
+				let file = dir.getNext().QueryInterface(Components.interfaces.nsIFile);
+				if (!file.isDirectory() && file.leafName.endsWith(aType)) {
+					files.push(file);
+				}
 			}
+		} catch (err) {
+			console.log(err);
 		}
 		return files;
 	},
@@ -130,10 +134,10 @@ let userChromeLoader = {
 		}
 		runStartup(sandbox, "ADDON_ENABLE");
 		// SHUTDOWN
-		let test = sandbox["shutdown"];
-		if (test) {
+		// let test = sandbox["shutdown"];
+		// if (test) {
 			this.loadedBootstrapSandboxes[uri] = sandbox;
-		}
+		// }
 	},
 	loadOverlays: function (win, overlays) {
 		let document = win.document;
@@ -143,8 +147,8 @@ let userChromeLoader = {
 				let man = "overlay chrome://browser/content/browser.xul " + chromeURI;
 				(async function (win) {
 					let newChromeManifest = new ChromeManifest(function () {
-						return man;
-					}, this.options);
+							return man;
+						}, this.options);
 					await newChromeManifest.parse();
 					Overlays.load(newChromeManifest, win.document.defaultView);
 				})(win);
@@ -152,4 +156,9 @@ let userChromeLoader = {
 		}
 	}
 }
-userChromeLoader.init();
+
+try {
+	userChromeLoader.init();
+} catch (err) {
+	console.log(err);
+}
