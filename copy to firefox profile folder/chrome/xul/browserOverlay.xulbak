@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<overlay id="dotslashca_highlightTabOverlay" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	 <script language="javascript"  src="chrome://dotslashcahighlighttab/content/highlighttabOverlay.js"/>
+
+
+	 <popup id="tabContextMenu" >
+	 	<menu id="dotslashca_highlightTabMenu" label="Highlight Tab" position="3">
+		     <menupopup>	
+		     	<grid>
+				<columns>
+					<column />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<menuitem id="dotslashca_highlightColorRed" class="coloredTabs" oncommand="highlighttab.highlightTab(popupNode, '#F04F61')" label=""  />
+						<menuitem id="dotslashca_highlightColorLRed" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#f8ada8')" label=""  />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorOrange" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#f48121')" label=""  />
+						<menuitem id="dotslashca_highlightColorLOrange" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#FAAD5F')" label=""  />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorYellow" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#FFC94D')" label=""  />
+						<menuitem id="dotslashca_highlightColorLYellow" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#FFE1A5')" label=""  />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorGreen" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#A4CF4D')" label=""  />
+						<menuitem id="dotslashca_highlightColorLGreen" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#C5DE92')" label="" />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorBlue" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#32B0CF')" label="" />
+						<menuitem id="dotslashca_highlightColorLBlue" class="coloredTabs" oncommand="highlighttab.highlightTab(popupNode, '#8dcee2')" label=""  />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorIndigo" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#8c58a8')" label=""  />
+						<menuitem id="dotslashca_highlightColorLIndigo" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#D4B8CF')" label=""  />
+					</row>
+					<row>
+						<menuitem id="dotslashca_highlightColorViolet" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#A27D60')" label=""  />
+						<menuitem id="dotslashca_highlightColorLViolet" class="coloredTabs"  oncommand="highlighttab.highlightTab(popupNode, '#C7B49C')" label=""  />
+					</row>
+
+					<menuitem id="dotslashca_highlightColorNone" oncommand="highlighttab.highlightTab(popupNode, '')" label="NONE" />
+					
+				</rows>
+			</grid>
+
+		     </menupopup>
+		 </menu>
+	</popup>
+
+</overlay>
