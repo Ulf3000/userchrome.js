@@ -6,6 +6,7 @@ Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/Console.jsm");
 Components.utils.import('resource:///modules/CustomizableUI.jsm');
+Components.utils.import("resource://gre/modules/BrowserUtils.jsm");
 
 let userChromeLoader = {
 	init: function () {
@@ -95,7 +96,7 @@ let userChromeLoader = {
 		
 		// CREATE UI
 		CustomizableUI.createWidget({
-			id: 'UserChromeButton', //id in cui.jsm // SHOULD match id of that in dom (Line #11)
+			id: 'UserChromeButton', //id in cui.jsm 
 			type: 'custom',
 			defaultArea: CustomizableUI.AREA_NAVBAR,
 			onBuild: function (aDocument) {
@@ -107,7 +108,7 @@ let userChromeLoader = {
 				toolbaritem.textContent = "UserChrome";
 
 				let props = {
-					id: 'UserChromeButton', //id in dom // SHOULD match id of that in cui.jsm (Line #2)
+					id: 'UserChromeButton', //id in dom 
 					title: 'UserChrome',
 					label: 'UserChrome',
 					align: 'center',
