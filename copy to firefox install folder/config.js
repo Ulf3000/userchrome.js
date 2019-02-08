@@ -13,31 +13,29 @@ let userChromeLoader = {
 		// CANCEL IN SAFEMODE
 		if (Components.classes['@mozilla.org/xre/app-info;1'].getService(Components.interfaces.nsIXULRuntime).inSafeMode)
 			return;
-		
- 
+
 		//  REGISTER CHROME FOLDER AS chrome://userchromejs/content/  ...this makes everything so easy :)
 		let cmanifest = FileUtils.getDir('UChrm', true);
 		cmanifest.append('chrome.manifest');
 		Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar).autoRegister(cmanifest);
-		
-		
-		/* 		// ADD BOOTSTRAPPED EXTENSION support for ff65+
-		ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-		if (AddonManager.addExternalExtensionLoader) {
-		ChromeUtils.import('chrome://userchromejs/content/BootstrapLoader.jsm');
-			AddonManager.addExternalExtensionLoader(BootstrapLoader);
+
+		// ADD BOOTSTRAPPED EXTENSION support for ff65+  (real extensions as in xpi files)
+/* 		if (Services.appinfo.version.split(".")[0] > 64) {
+			Components.utils.import('resource://gre/modules/AddonManager.jsm');
+			if (AddonManager.addExternalExtensionLoader) {
+				Components.utils.import('chrome://userchromejs/content/modules/BootstrapLoader.jsm');
+				AddonManager.addExternalExtensionLoader(BootstrapLoader);
+			}
 		}
-		*/		
- 
-		
+ */
 		//IMPORT FILES FROM FOLDERS
 		let legacyScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "legacy"], true), ".js");
 		let sandboxedScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "sandboxed"], true), ".js");
 		let overlays = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "xul"], true), ".xul");
 		//let styles = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "css"], true), ".css");
-		
+
 		//RUN LEGACY SCRIPTS
-		let enumerator = Services.wm.getEnumerator("navigator:browser");  // TODO change behaviour for loading 
+		let enumerator = Services.wm.getEnumerator("navigator:browser"); // TODO change behaviour for loading
 		while (enumerator.hasMoreElements()) {
 			let win = enumerator.getNext();
 			this.loadLegacyScripts(win.document, legacyScripts);
@@ -52,7 +50,7 @@ let userChromeLoader = {
 		}
 		Services.obs.addObserver(windowStartUpObserver, 'domwindowopened', false);
 
-		//RUN SANDBOXED/BOOTSTRAPPED SCRIPTS
+		//RUN SANDBOXED SCRIPTS
 		this.loadedBootstrapSandboxes = {};
 		for (let file of sandboxedScripts) {
 			let chromeURI = 'chrome://userchromejs/content/sandboxed/' + file.leafName;
@@ -91,31 +89,29 @@ let userChromeLoader = {
 			}
 		}
 		Services.obs.addObserver(windowStartUpObserver2, 'domwindowopened', false);
-		
-		
-		
-		// CREATE UI
+
+		// CREATE UI BUTTON
 		CustomizableUI.createWidget({
-			id: 'UserChromeButton', //id in cui.jsm 
+			id: 'UserChromeButton', //id in cui.jsm
 			type: 'custom',
 			defaultArea: CustomizableUI.AREA_NAVBAR,
 			onBuild: function (aDocument) {
-
 				//if (aDocument.defaultView.PrivateBrowsingUtils.isWindowPrivate(win) == true) console.log("isWindowPrivate");
-
-
 				let toolbaritem = aDocument.createElementNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'toolbaritem');
 				toolbaritem.textContent = "UserChrome";
 
 				let props = {
-					id: 'UserChromeButton', //id in dom 
+					id: 'UserChromeButton', //id in dom
 					title: 'UserChrome',
 					label: 'UserChrome',
 					align: 'center',
 					pack: 'center',
 					removable: 'true',
 					sdkstylewidget: 'true',
-					overflows: false
+					overflows: false,
+					type: "menu",
+					popup: "UserChromePopup",
+					context: "UserChromePopup"
 				};
 				for (let p in props) {
 					toolbaritem.setAttribute(p, props[p]);
@@ -123,16 +119,13 @@ let userChromeLoader = {
 				//toolbaritem.className = "toolbarbutton-1";
 				//toolbaritem.className += " chromeclass-toolbar-additional";
 				//toolbaritem.className += " badged-button";
-				toolbaritem.setAttribute("type", "menu");
-				toolbaritem.setAttribute("popup", "UserChromePopup");
-				toolbaritem.setAttribute("context", "UserChromePopup");
-
+				
 				userChromeLoader.makeMenu(aDocument.defaultView, toolbaritem, legacyScripts, sandboxedScripts, overlays);
 
 				return toolbaritem;
 			}
 		});
-		
+
 	},
 	importFolder: function (aFolder, aType) {
 		let files = [];
@@ -165,16 +158,17 @@ let userChromeLoader = {
 		// CREATE SANDBOX
 		let principal = Components.classes["@mozilla.org/systemprincipal;1"].createInstance(Components.interfaces.nsIPrincipal);
 		let sandbox = new Components.utils.Sandbox(principal, {
-				sandboxName: uri,
-				metadata: {
-					URI: uri
-				}
-			});
-		XPCOMUtils.defineLazyGetter(// Define a console
+			sandboxName: uri,
+			metadata: {
+				URI: uri
+			}
+		});
+		XPCOMUtils.defineLazyGetter(   // Define a console
 			sandbox, "console",
 			() => new ConsoleAPI({
 				consoleID: "userChrome/" + name
-			}));
+			})
+		);
 		sandbox.__SCRIPT_URI_SPEC__ = uri;
 		Services.scriptloader.loadSubScript(uri, sandbox);
 
@@ -192,7 +186,7 @@ let userChromeLoader = {
 		// SHUTDOWN
 		// let test = sandbox["shutdown"];
 		// if (test) {
-			this.loadedBootstrapSandboxes[uri] = sandbox;
+		this.loadedBootstrapSandboxes[uri] = sandbox;
 		// }
 	},
 	loadOverlays: function (win, overlays) {
@@ -251,10 +245,10 @@ let userChromeLoader = {
 		e.target.file.launch();
 	},
 	restart: function (e) {
-		if (e.button == 1 || e.button == 2) {
+		//if (e.button == 1 || e.button == 2) {
 			e.preventDefault();
 			Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULRuntime).invalidateCachesOnRestart();
-		};
+	//};
 		BrowserUtils.restartApplication();
 	}
 }
