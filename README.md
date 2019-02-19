@@ -37,10 +37,4 @@ this way you can create or port whole addons very easily, not just simple script
 
 --------------------------------------------------------------------------
 
-the modules folder is just a folder where we can put usefull jsm files and other libraries , the files could be copied anywhere in the chrome folder obviously , but i think its nice to have a place to collect them.
-
-import like this for example
-Components.utils.import("chrome://userchromejs/content/modules/Overlays.jsm");
-
-i prepackaged the files Overlays.jsm and ChromeManifest.jsm in modules, these are important for overlay loading , they are "stolen" from thunderbird 61
-
+the utils folder contains util files for the loader to work
