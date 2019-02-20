@@ -1,4 +1,4 @@
-//
+// skip 1st line
 // config.js userchrome loader
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/osfile.jsm");
@@ -20,14 +20,14 @@ let userChromeLoader = {
 		Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar).autoRegister(cmanifest);
 
 		// ADD BOOTSTRAPPED EXTENSION support for ff65+  (real extensions as in xpi files)
-/* 		if (Services.appinfo.version.split(".")[0] > 64) {
+		if (Services.appinfo.version.split(".")[0] > 64) {
 			Components.utils.import('resource://gre/modules/AddonManager.jsm');
 			if (AddonManager.addExternalExtensionLoader) {
-				Components.utils.import('chrome://userchromejs/content/modules/BootstrapLoader.jsm');
+				Components.utils.import('chrome://userchromejs/content/utils/BootstrapLoader.jsm');
 				AddonManager.addExternalExtensionLoader(BootstrapLoader);
 			}
 		}
- */
+
 		//IMPORT FILES FROM FOLDERS
 		let legacyScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "legacy"], true), ".js");
 		let sandboxedScripts = this.importFolder(FileUtils.getDir("ProfD", ["chrome", "sandboxed"], true), ".js");
@@ -62,8 +62,8 @@ let userChromeLoader = {
 		}
 
 		// RUN XUL OVERLAYS
-		Components.utils.import("chrome://userchromejs/content/modules/Overlays.jsm");
-		Components.utils.import("chrome://userchromejs/content/modules/ChromeManifest.jsm");
+		Components.utils.import("chrome://userchromejs/content/utils/Overlays.jsm");
+		Components.utils.import("chrome://userchromejs/content/utils/ChromeManifest.jsm");
 		let appinfo = Services.appinfo;
 		this.options = {
 			application: appinfo.ID,
@@ -137,7 +137,7 @@ let userChromeLoader = {
 					files.push(file);
 				}
 			}
-		} catch (err) {
+		} catch(err) {
 			console.log(err);
 		}
 		return files;
@@ -148,8 +148,8 @@ let userChromeLoader = {
 				let chromeURI = 'chrome://userchromejs/content/legacy/' + file.leafName;
 				try {
 					Services.scriptloader.loadSubScript(chromeURI, document.defaultView, 'UTF-8');
-				} catch (err) {
-					console.log(err);
+				} catch(err) {
+					//console.log(err)
 				}
 			}
 		}
@@ -245,10 +245,8 @@ let userChromeLoader = {
 		e.target.file.launch();
 	},
 	restart: function (e) {
-		//if (e.button == 1 || e.button == 2) {
-			e.preventDefault();
-			Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULRuntime).invalidateCachesOnRestart();
-	//};
+		e.preventDefault();
+		Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).invalidateCachesOnRestart();
 		BrowserUtils.restartApplication();
 	}
 }
